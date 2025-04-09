@@ -1,20 +1,25 @@
 #!/usr/bin/env ruby
+FizzBuzz = 15
+Fizz = 3
+Buzz = 5
+PrintStart = 1
+PrintEnd = 20
 
 # fizzbuzz判定・出力.
 def fizzbuzz(number)
   # 3と5両方の倍数.
-  if number % 15 == 0
+  if number % FizzBuzz == 0
     puts "FizzBuzz"
-  # 5の倍数.
-  elsif number % 5 == 0
-    puts "Buzz"
   # 3の倍数.
-  elsif number % 3 == 0
+  elsif number % Fizz == 0
     puts "Fizz"
+  # 5の倍数.
+  elsif number % Buzz == 0
+    puts "Buzz"
   else
     puts number
   end
 end
 
-# 1から20までプリント.
-1.upto(20) { |i| fizzbuzz(i)}
+# PrintStartからPrintEndまでプリント.
+PrintStart.upto(PrintEnd) { |i| fizzbuzz(i)}
