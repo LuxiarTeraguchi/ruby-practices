@@ -2,80 +2,55 @@
 require 'date'
 require 'optparse'
 
-# 定数.
-YearMin = 1700
-YearMax = 2100
-January = 1
-December = 12
-LineWidth = 20
-DayWidth = 2
+YEAR_MIN = 1970
+YEAR_MAX = 2100
+LINE_WIDTH = 20
+DAY_WIDTH = 2
 
-# コマンドライン引数から指定月の月初め・月末を取得.
 def get_input_date
   opt = OptionParser.new
   today = Date.today
-  year = today.year
-  month = today.month
 
-  # -yオプションでの年指定.
+  year = today.year
   opt.on('-y YEAR', Integer) do |input_year|
-    # 範囲外の年は弾く.
-    if input_year.between?(YearMin, YearMax)
-      year = input_year
-    else
-      puts "year '#{input_year}' not in range #{YearMin}..#{YearMax}"
-      exit
-    end
+    year = input_year if input_year.between?(YEAR_MIN, YEAR_MAX)
   end
 
-  # -mオプションでの月指定.
+  month = today.month
   opt.on('-m MONTH', Integer) do |input_month|
-    # 存在しない月は弾く.
-    if input_month.between?(January, December)
-      month = input_month
-    else
-      puts "#{input_month} is neither a month number (#{January}..#{December}) nor a name"
-      exit
-    end
+    month = input_month if input_month.between?(1, 12)
   end
 
   opt.parse!(ARGV)
-  return year, month
+  [year, month]
 end
 
-# カレンダー出力.
-def print_calendar(year:, month:)
-  today = Date.today # 今日.
-  date_first = Date.new(year, month, 1) # 指定年月の月初め.
-  date_last = Date.new(year, month, -1) # 指定年月の月末.
+def print_calendar(year, month)
+  puts "#{month}月 #{year}".center(LINE_WIDTH)
+  puts "日 月 火 水 木 金 土"
+
+  first_date = Date.new(year, month, 1)
+  last_date = Date.new(year, month, -1)
   date_text = ""
+  today = Date.today
 
-  puts "#{month}月 #{year}".center(LineWidth) # 月・年出力. 中央揃え.
-  puts "日 月 火 水 木 金 土" # 曜日出力.
-
-  # 日付出力.
-  (date_first..date_last).each do |date|
-    # 日付追加. 今日なら背景色を変える.
+  (first_date..last_date).each do |date|
     date_text += "\e[47m" if date == today
-    date_text += date.day.to_s.rjust(DayWidth) # 幅を合わせる.
+    date_text += date.day.to_s.rjust(DAY_WIDTH)
     date_text += "\e[0m" if date == today
 
-    # 行末まで来たら出力.
-    # 土曜なら右揃えで出力.
-    if date.wday == 6
-      puts date_text.rjust(LineWidth) + "\n"
+    if date.saturday?
+      puts date_text.rjust(LINE_WIDTH)
       date_text = ""
-    # 月末ならそのまま出力.
-    elsif date == date_last
-      puts date_text + "\n"
-    # 行末でないなら余白追加.
+    elsif date == last_date
+      puts date_text
     else
       date_text += " "
     end
   end
 
-  puts "\n"
+  puts
 end
 
-year, month = get_input_date() # 指定年月取得.
-print_calendar(year: year, month: month) # カレンダー出力.
+year, month = get_input_date
+print_calendar(year, month)
