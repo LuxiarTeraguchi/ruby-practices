@@ -24,7 +24,6 @@ def make_rows(filenames)
     rows[rows_index] ||= []
     rows[rows_index] << filename.ljust(column_width)
   end
-
   rows
 end
 
