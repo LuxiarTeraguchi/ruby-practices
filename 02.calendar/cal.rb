@@ -7,6 +7,11 @@ YEAR_MAX = 2100
 LINE_WIDTH = 20
 DAY_WIDTH = 2
 
+def main
+  year, month = get_input_date
+  print_calendar(year, month)
+end
+
 def get_input_date
   opt = OptionParser.new
   today = Date.today
@@ -31,7 +36,7 @@ def print_calendar(year, month)
 
   first_date = Date.new(year, month, 1)
   last_date = Date.new(year, month, -1)
-  date_text = ""
+  date_text = " " * (DAY_WIDTH + 1) * first_date.wday
   today = Date.today
 
   (first_date..last_date).each do |date|
@@ -39,11 +44,9 @@ def print_calendar(year, month)
     date_text += date.day.to_s.rjust(DAY_WIDTH)
     date_text += "\e[0m" if date == today
 
-    if date.saturday?
-      puts date_text.rjust(LINE_WIDTH)
-      date_text = ""
-    elsif date == last_date
+    if date.saturday? || date == last_date
       puts date_text
+      date_text = ""
     else
       date_text += " "
     end
@@ -52,5 +55,4 @@ def print_calendar(year, month)
   puts
 end
 
-year, month = get_input_date
-print_calendar(year, month)
+main
