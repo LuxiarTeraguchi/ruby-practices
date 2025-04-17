@@ -3,6 +3,7 @@
 
 STRIKE_SHOT = 10
 LAST_FRAME = 10
+LAST_FRAME_INDEX = LAST_FRAME - 1
 
 def get_shot(score)
   if score == 'X'
@@ -17,7 +18,7 @@ def get_frames(scores)
   frames = []
   scores.each do |score|
     shot = get_shot(score)
-    if frames.length < LAST_FRAME - 1 && (shot == STRIKE_SHOT || !frame.empty?)
+    if frames.length < LAST_FRAME_INDEX && (shot == STRIKE_SHOT || !frame.empty?)
       frame << shot
       frames << frame.clone
       frame.clear
@@ -33,7 +34,7 @@ def calc_point(scores, frames)
   point = 0
   frames.each_with_index do |frame, index|
     bonus_index += frame.size
-    unless index == LAST_FRAME - 1
+    if index != LAST_FRAME_INDEX
       if frame[0] == STRIKE_SHOT
         frame << get_shot(scores[bonus_index]) + get_shot(scores[bonus_index + 1])
       elsif frame.sum == STRIKE_SHOT
