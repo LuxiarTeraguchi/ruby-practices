@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'optparse'
+
 COLUMN_MAX = 3
 WIDTH_UNIT = 8
 
@@ -11,7 +13,10 @@ def main
 end
 
 def list_filenames
+  opt = OptionParser.new
   filenames = Dir.glob('*').map { |path| File.basename(path) }
+  opt.on('-a') { filenames = Dir.entries('.') }
+  opt.parse!(ARGV)
   filenames.sort_by(&:downcase)
 end
 
