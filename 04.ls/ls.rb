@@ -7,17 +7,26 @@ COLUMN_MAX = 3
 WIDTH_UNIT = 8
 
 def main
-  filenames = list_filenames
+  options = parse_options
+  filenames = list_filenames(options)
   rows = make_rows(filenames)
   output_rows(rows)
 end
 
-def list_filenames
+def parse_options
   opt = OptionParser.new
-  filenames = Dir.glob('*').map { |path| File.basename(path) }
-  opt.on('-a') { filenames = Dir.entries('.') }
+  options = {}
+  opt.on('-a') { options[:a] = true }
+  opt.on('-r') { options[:r] = true }
   opt.parse!(ARGV)
-  filenames.sort_by(&:downcase)
+  options
+end
+
+def list_filenames(options)
+  filenames = Dir.glob('*')
+  filenames = Dir.entries('.') if options[:a]
+  filenames = filenames.sort_by(&:downcase)
+  options[:r] ? filenames.reverse : filenames
 end
 
 def make_rows(filenames)
